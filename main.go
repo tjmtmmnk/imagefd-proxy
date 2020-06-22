@@ -29,10 +29,16 @@ func getImage(c echo.Context) error {
 	}
 	return c.Blob(http.StatusOK, "image/png", body)
 }
+
+func health(c echo.Context) error {
+	return c.String(http.StatusOK, "alive!!")
+}
+
 func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
+	e.GET("/", health)
 	e.POST("/image", getImage)
 	e.Logger.Fatal(e.Start(":8080"))
 }
