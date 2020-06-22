@@ -8,9 +8,17 @@ import (
 	"github.com/labstack/echo"
 )
 
+type Data struct {
+	Url string `json:"url"`
+}
+
 func getImage(c echo.Context) error {
-	imageUrl := c.QueryParam("url")
-	response, err := http.Get(imageUrl)
+	data := new(Data)
+	err := c.Bind(data)
+	if err != nil {
+		return err
+	}
+	response, err := http.Get(data.Url)
 	if err != nil {
 		return err
 	}
@@ -25,6 +33,6 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
-	e.GET("/image", getImage)
+	e.POST("/image", getImage)
 	e.Logger.Fatal(e.Start(":8080"))
 }
